@@ -3,6 +3,9 @@ import express from "express";
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
+
 const messages = [{
   id: 1,
   message: "Apple",
@@ -37,11 +40,24 @@ app.get('/messages/:id', (req, res) => {
   }
 });
 
-app.put('/message/:id', (req, res) => {
+app.put('/messages/:id', (req, res) => {
+  try {
+  const requestedId = parseInt(req.params.id, 10);
+  const new_content = req.body;
+  const index = messages.findIndex(msg => msg.id === requestedId);
+  if (index === -1){
+    return res.status(404).send("Message not found");
+  
+  }
+  messages[index] = { id: requestedId, ...new_content };
+  res.status(200).send("Ok");
 
+  } catch(error){
+    res.status(400).send("Bad request");
+  }
 });
 
-app.delete('/message/:id', (req, res) => {
+app.delete('/messages/:id', (req, res) => {
 
 });
 
