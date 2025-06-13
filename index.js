@@ -20,20 +20,23 @@ app.post('/messages', (req, res) => {
 
 });
 
-//ok
+
 app.get('/messages', (req, res) => {
   try {
     res.send(JSON.stringify(messages));
   } catch (error){
-    res.status(404).send("404 Not found"); // show error
+    res.status(404).send("404 Not found");
   }
 });
 
-//ok
+
 app.get('/messages/:id', (req, res) => {
   try {
-  const requestedId = parseInt(req.params.id, 10); //convert to number
-  const foundMessage = messages.find(msg => msg.id === requestedId); // find message based on id
+  const requestedId = parseInt(req.params.id, 10);
+  const foundMessage = messages.find(msg => msg.id === requestedId);
+  if (!foundMessage){
+    return res.status(404).send("Message not found");
+  }
   res.send(JSON.stringify(foundMessage));
   } catch (error){
     res.status(404).send("404 Not found");
@@ -58,6 +61,17 @@ app.put('/messages/:id', (req, res) => {
 });
 
 app.delete('/messages/:id', (req, res) => {
+  try{
+  const requestedId = parseInt(req.params.id);
+  const foundId = messages.find(msg => msg.id === requestedId);
+  
+  messages.splice(foundId, 1);
+  res.status(200).send("ok!");
+
+  }catch (error){
+    res.status(404).send("Message not found");
+  }
+
 
 });
 
