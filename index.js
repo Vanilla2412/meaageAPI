@@ -16,7 +16,19 @@ const messages = [{
 }];
 
 
-app.post('/messages', (req, res) => {
+app.post('/messages/:id', (req, res) => {
+const requestId = parseInt(req.params.id);
+const new_content = req.body;
+
+// add a message only
+if (!isNaN(requestId)) {
+    messages.push({id: requestId,
+      message: new_content,
+    });
+    res.status(201).send("Message added");
+  } else {
+    res.status(400).send("Bad request");
+  }
 
 });
 
@@ -71,12 +83,7 @@ app.delete('/messages/:id', (req, res) => {
   }catch (error){
     res.status(404).send("Message not found");
   }
-
-
 });
-
-
-
 
 app.listen(port, (req, res) => {
   console.log(`Server is running ${port}`);
